@@ -18,7 +18,7 @@ def now():
 class App(object):
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Omo Trainer")
+        self.root.title("Omo Tracker")
         try:
             img = tk.Image("photo", file="icon.png")
             self.root.call('wm', 'iconphoto', self.root._w, img)
@@ -47,12 +47,19 @@ class App(object):
         self.poll()
 
     def create_widgets(self):
+        # Mainframe:
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.mainframe.columnconfigure(0, weight=1)
         self.mainframe.rowconfigure(0, weight=1)
 
-        self.bladder_bar = ttk.Progressbar(self.mainframe, orient=tk.VERTICAL,
+        # Style:
+        style = ttk.Style()
+        style.theme_use('clam')
+        style.configure("yellow.Vertical.TProgressbar", foreground='yellow', background='yellow')
+
+
+        self.bladder_bar = ttk.Progressbar(self.mainframe, style="yellow.Vertical.TProgressbar", orient=tk.VERTICAL,
                                            variable=self.desperation, maximum=1, mode='determinate')
         self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
 
@@ -170,4 +177,3 @@ if __name__ == "__main__":
     app = App()
     app.root.mainloop()
     app.save_data()
-
