@@ -1,4 +1,48 @@
-import omo
+#----------------------------
+#File Headers:
+#----------------------------
+#Shebang:
+#!/usr/bin/env python
+
+
+#Encoding:
+# -*- coding: utf-8 -*-
+
+
+#Docstring:
+"""
+Filename: app.py
+Authors: PERVasive, Tsukiko
+Date: 05/09/2018
+Version: 1.0.0
+Description:
+    Omo Trainer keeps track of the fluids you drink, models your pee desperation over time,
+    and allows or denies potty breaks. It also keeps track of your accidents to learn your
+    personal bladder capacity.
+
+License: MIT License
+Contact: https://github.com/perv-asive, tsukiko1701@gmail.com
+Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py
+"""
+
+
+#Dunders:
+__author__ = "PERVasive, Tsukiko"
+__copyright__ = "Copyright (c) 2018 perv-asive, Copyright (c) 2025 Tsukiko-030"
+__credits__ = ["PERVasive", "Tsukiko"]
+__license__ = "The MIT License (MIT)"
+__version__ = "1.0.0"
+__maintainer__ = "Tsukiko"
+__email__ = "tsukiko1701@gmail.com"
+__status__ = "Alpha"
+#----------------------------
+
+
+
+
+#----------------------------
+#Import Statements:
+#----------------------------
 import time
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -6,19 +50,43 @@ import appdirs
 import csv
 import os
 import math
+import omo
+#----------------------------
 
+
+
+
+#---------------------------------------------------------------
+#Set up save file storage paths:
+#---------------------------------------------------------------
 save_dir = appdirs.user_data_dir('Omo Trainer', 'PERVasive')
 accident_log = os.path.join(save_dir, 'accidents.csv')
+#---------------------------------------------------------------
 
 
+
+
+#----------------------------
+#Exterior Functions:
+#----------------------------
 def now():
     return time.time()/60.0
+#----------------------------
 
 
+
+
+#----------------------------------------------------------------------------------------------------------------------
+#Main Class:
+#----------------------------------------------------------------------------------------------------------------------
 class App(object):
     def __init__(self):
+        #Setup application window:
         self.root = tk.Tk()
         self.root.title("Omo Tracker")
+        
+
+        #Try to load application icon:
         try:
             img = tk.Image("photo", file="icon.png")
             self.root.call('wm', 'iconphoto', self.root._w, img)
@@ -26,39 +94,47 @@ class App(object):
             # If the icon is missing, just go on with the default icon
             pass
 
+
+        #Create Drinker Object:
         self.drinker = omo.Drinker()
 
+
+        #Try to load hold history CSV
         self.load_data()
 
-        # Initialize GUI property variables
+
+        # Initialize GUI property variables:
         self.desperation = tk.DoubleVar()
-
         self.drink_amount = tk.IntVar()
-        self.drink_amount.set(300)
-
+        self.drink_amount.set(500)
         self.bladder_text = tk.StringVar()
         self.drink_text = tk.StringVar()
         self.permission_text = tk.StringVar()
         self.eta_text = tk.StringVar()
 
+
+        #Display GUI Widgets:
         self.create_widgets()
+
+
+        #Display GUI Menus:
         self.create_menus()
 
+
+        #Periodically check for GUI changes and update backend:
         self.poll()
 
+
+
+
     def create_widgets(self):
-        # Mainframe:
+        # Main Frame:
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.mainframe.columnconfigure(0, weight=1)
         self.mainframe.rowconfigure(0, weight=1)
 
-        # Style:
-        style = ttk.Style()
-        style.theme_use('clam')
-        style.configure("yellow.Vertical.TProgressbar", foreground='yellow', background='yellow')
-
-
+        #Widgets:
         self.bladder_bar = ttk.Progressbar(self.mainframe, style="yellow.Vertical.TProgressbar", orient=tk.VERTICAL,
                                            variable=self.desperation, maximum=1, mode='determinate')
         self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
@@ -70,7 +146,7 @@ class App(object):
         self.eta_display.grid(column=1, row=2, columnspan=2, sticky=(tk.S, tk.W))
 
         self.drink_slider = ttk.Scale(self.mainframe, orient=tk.HORIZONTAL, length=200,
-                                      variable=self.drink_amount, command=self._quantize_drink, from_=100, to=750)
+                                      variable=self.drink_amount, command=self._quantize_drink, from_=50, to=1000)
         self.drink_slider.grid(column=1, row=0, columnspan=2, sticky=(tk.W, tk.E))
 
         self.drink_display = ttk.Label(self.mainframe, textvariable=self.drink_text)
@@ -95,6 +171,9 @@ class App(object):
         for child in self.mainframe.winfo_children():
             child.grid_configure(padx=5, pady=5)
 
+
+
+
     def create_menus(self):
         self.menubar = tk.Menu(self.root, tearoff=0)
         self.menu_main = tk.Menu(self.menubar, tearoff=0)
@@ -102,24 +181,39 @@ class App(object):
         self.menubar.add_cascade(menu=self.menu_main, label='Menu')
         self.menu_main.add_command(label='Reset Capacity Log', command=self.reset_capacity)
 
+
+
+
     def _quantize_drink(self, *args):
         value = self.drink_slider.get()
         quantized_val = int(round(value/50)*50)
         self.drink_amount.set(quantized_val)
         self.drink_text.set(str(quantized_val) + " mL")
 
-    def _on_click(self, butt):
+
+
+
+    def _on_click(self, button):
         """Briefly disables a button to avoid accidental double clicking"""
-        butt.state(['disabled'])
-        self.root.after(1000, lambda: butt.state(['!disabled']))
+        button.state(['disabled'])
+        self.root.after(1000, lambda: button.state(['!disabled']))
+
+
+
 
     def drink(self):
         self.drinker.add_drink(now(), self.drink_amount.get())
         self._on_click(self.drink_button)
 
+
+
+
     def accident(self):
         self.drinker.add_release(now(), False)
         self._on_click(self.accident_button)
+
+
+
 
     def ask_permission(self):
         if self.drinker.roll_for_permission(now()):
@@ -130,10 +224,16 @@ class App(object):
             self.permission_text.set("You may not pee.")
             self.permission_button.state(['disabled'])
 
+
+
+
     def pee(self):
         self.drinker.add_release(now(), True)
         self.permission_text.set("May I pee?")
         self.pee_button.state(['disabled'])
+
+
+
 
     def poll(self):
         t = now()
@@ -155,11 +255,17 @@ class App(object):
             self.permission_text.set("May I pee?")
         self.root.after(500, self.poll)
 
+
+
+
     def load_data(self):
         if os.path.exists(accident_log):
             with open(accident_log, 'r', newline='') as f:
                 reader = csv.reader(f)
                 self.drinker.old_accidents = [float(row[0]) for row in reader]
+
+
+
 
     def save_data(self):
         os.makedirs(os.path.dirname(accident_log), exist_ok=True)
@@ -167,13 +273,23 @@ class App(object):
             writer = csv.writer(f)
             writer.writerows([accident.amount] for accident in self.drinker.accidents)
 
+
+
+
     def reset_capacity(self):
         if os.path.exists(accident_log):
             os.remove(accident_log)
         self.drinker.old_accidents = []
+#----------------------------------------------------------------------------------------------------------------------
 
 
+
+
+#----------------------------
+#Main Loop
+#----------------------------
 if __name__ == "__main__":
     app = App()
     app.root.mainloop()
     app.save_data()
+#----------------------------

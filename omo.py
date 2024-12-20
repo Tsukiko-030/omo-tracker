@@ -1,9 +1,59 @@
-__author__ = 'PERVasive'
+#----------------------------
+#File Headers:
+#----------------------------
+#Shebang:
+#!/usr/bin/env python
 
+
+#Encoding:
+# -*- coding: utf-8 -*-
+
+
+#Docstring:
+"""
+Filename: omo.py
+Author: PERVasive
+Date: 05/09/2018
+Version: 1.0
+Description:
+    An exponential decay model for bladder filling. This is based on observing that since
+    the volume of bodily fluids must remain constant, the rate at which the kidneys produce
+    urine should be proportional to the amount of excess water in the body.
+    
+    The exponential decay model has been calibrated for a half-life equivalent to a urine
+    production rate of 750 mL/hr.
+
+License: MIT License
+Contact: https://github.com/perv-asive
+Dependencies: collections, statistics, random, math
+"""
+
+
+#Dunders:
+__author__ = "PERVasive"
+__copyright__ = "Copyright (c) 2018 perv-asive"
+__credits__ = ["PERVasive"]
+__license__ = "The MIT License (MIT)"
+__version__ = "1.0.0"
+__maintainer__ = "PERVasive"
+__contact__ = "https://github.com/perv-asive"
+__status__ = "Production"
+#----------------------------
+
+
+
+
+#----------------------------
+#Import Statements:
+#----------------------------
 import collections
 import statistics
 import random
 from math import log2
+#----------------------------
+
+
+
 
 # h is the half life of water consumed before it gets absorbed, in minutes
 h = float(45)

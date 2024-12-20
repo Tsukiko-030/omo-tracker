@@ -31,7 +31,7 @@ The idea is to play this game while going about your normal day, to make things 
 
 You might notice that after asking permission, you can't ask again for some time. This delay is not a fixed amount of time, but rather depends on how much your desperation has increased since the last time you asked. That way, having a large bladder does not give you more chances to ask permission.
 
-###Bladder Capacity
+### Bladder Capacity
 
 Whenever you press "I can't hold it!" Omo Trainer records the amount it estimates you were holding and saves it between sessions. Omo Trainer uses the average of your accident amounts as your bladder capacity.
 
@@ -39,7 +39,7 @@ Since the only way that Omo Trainer learns about your bladder capacity is when y
 
 If you are dehydrated to begin with, a significant percentage of fluids will not reach your bladder, leading Omo Trainer to significantly overestimate your desperation and bladder capacity. Therefore hydrate well before playing.
 
-###The Bladder Model
+### The Bladder Model
 
 Omo Trainer uses an exponential decay model for bladder filling. This is based on observing that since the volume of bodily fluids must remain constant, the rate at which the kidneys produce urine should be proportional to the amount of excess water in the body. 
 
