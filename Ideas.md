@@ -10,7 +10,9 @@
 
 
 ## Level 2 Ideas:
-* A filling bladder to replace the green bar.
+* A filling bladder to replace the green bar:
+    * Change bar color, make horizontal and move to bottom of screen next to fill text.
+    * Put bladder meter front and center.
 * Maybe store things like icons etc in other places so the app folder doesn't look like a mess, maybe an intaller is a good idea though that feels like level 3 funtionality.
 * Some kind of intro screen with options to input name, estimated bladder size and perhaps prefered dificulty level?
 * A scrollable text frame storing all the hold's activities like consumption and leaks maybe some background stuff.
