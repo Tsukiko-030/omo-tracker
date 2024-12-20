@@ -1,7 +1,7 @@
 # Ideas for OMO Tracker:
 
 ## Level 1 Ideas:
-* Timer & Store Hold times in CSV. Store hold number as well.
+* **Timer & Store Hold times in CSV. Store hold number as well.**
 * Remove permission system.
 * Bring up a history.
 * Desperation Scale Integration. With colored fonts.

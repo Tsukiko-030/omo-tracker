@@ -69,8 +69,11 @@ accident_log = os.path.join(save_dir, 'accidents.csv')
 #----------------------------
 #Exterior Functions:
 #----------------------------
-def now():
+def current_time_in_minutes_float():
     return time.time()/60.0
+
+def current_time_in_seconds_int():
+    return (int(time.time()))
 #----------------------------
 
 
@@ -111,6 +114,7 @@ class App(object):
         self.drink_text = tk.StringVar()
         self.permission_text = tk.StringVar()
         self.eta_text = tk.StringVar()
+        self.hold_timer = tk.StringVar()
 
 
         #Display GUI Widgets:
@@ -121,6 +125,10 @@ class App(object):
         self.create_menus()
 
 
+        #Initialize hold timer:
+        self.reset_hold_timer()
+        
+
         #Periodically check for GUI changes and update backend:
         self.poll()
 
@@ -128,13 +136,13 @@ class App(object):
 
 
     def create_widgets(self):
-        # Main Frame:
+        # Set up tkinter main frame:
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.mainframe.columnconfigure(0, weight=1)
         self.mainframe.rowconfigure(0, weight=1)
 
-        #Widgets:
+        #Set up tinter widgets:
         self.bladder_bar = ttk.Progressbar(self.mainframe, style="yellow.Vertical.TProgressbar", orient=tk.VERTICAL,
                                            variable=self.desperation, maximum=1, mode='determinate')
         self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
@@ -167,6 +175,9 @@ class App(object):
 
         self.accident_button = ttk.Button(self.mainframe, text="I can't hold it!", command=self.accident)
         self.accident_button.grid(column=4, row=1, sticky=(tk.E))
+
+        self.hold_timer_display = ttk.Label(self.mainframe, textvariable= self.hold_timer)
+        self.hold_timer_display.grid(column = 4, row = 2, sticky=(tk.S, tk.E))
 
         for child in self.mainframe.winfo_children():
             child.grid_configure(padx=5, pady=5)
@@ -202,21 +213,27 @@ class App(object):
 
 
     def drink(self):
-        self.drinker.add_drink(now(), self.drink_amount.get())
+        self.drinker.add_drink(current_time_in_minutes_float(), self.drink_amount.get())
         self._on_click(self.drink_button)
 
 
 
 
     def accident(self):
-        self.drinker.add_release(now(), False)
+        # Store Urination and the fact that permission was allowed not in CSV:
+        self.drinker.add_release(current_time_in_minutes_float(), False)
+
+        #Reset hold timer:
+        self.reset_hold_timer()
+
+        #Briefly disable the i can't hold it button to avoid accidental double clicking:
         self._on_click(self.accident_button)
 
 
 
 
     def ask_permission(self):
-        if self.drinker.roll_for_permission(now()):
+        if self.drinker.roll_for_permission(current_time_in_minutes_float()):
             self.permission_text.set("You may pee.")
             self.permission_button.state(['disabled'])
             self.pee_button.state(['!disabled'])
@@ -228,7 +245,13 @@ class App(object):
 
 
     def pee(self):
-        self.drinker.add_release(now(), True)
+        # Store Urination and the fact that permission was allowed in CSV:
+        self.drinker.add_release(current_time_in_minutes_float(), True)
+
+        #Reset hold timer:
+        self.reset_hold_timer()
+
+        #Reset button text and temporarily disable button:
         self.permission_text.set("May I pee?")
         self.pee_button.state(['disabled'])
 
@@ -236,7 +259,8 @@ class App(object):
 
 
     def poll(self):
-        t = now()
+        t = current_time_in_minutes_float()
+        self.update_hold_timer()
         self.desperation.set(self.drinker.desperation(t))
         self.bladder_text.set(str(round(self.drinker.bladder(t))) + " mL/" + str(round(self.drinker.capacity)) + " mL")
         if self.drinker.eta:
@@ -280,6 +304,35 @@ class App(object):
         if os.path.exists(accident_log):
             os.remove(accident_log)
         self.drinker.old_accidents = []
+    
+
+
+
+    def calculate_hold_time(self):
+        return((current_time_in_seconds_int()) - self.hold_start)
+    
+
+
+
+    def reset_hold_timer(self):
+        self.hold_timer.set(f"00:00:00")
+        self.hold_start = current_time_in_seconds_int()
+
+
+
+
+    def update_hold_timer(self):
+        # Calculate the elapsed time in seconds:
+        elapsed_seconds = self.calculate_hold_time()
+        
+        # Convert seconds into hours, minutes, and seconds:
+        hours = elapsed_seconds // 3600
+        minutes = (elapsed_seconds % 3600) // 60
+        seconds = elapsed_seconds % 60
+        
+        # Format the time as hh:mm:ss:
+        #return f"{hours:02}:{minutes:02}:{seconds:02}"
+        self.hold_timer.set(f"{hours:02}:{minutes:02}:{seconds:02}")
 #----------------------------------------------------------------------------------------------------------------------
 
 

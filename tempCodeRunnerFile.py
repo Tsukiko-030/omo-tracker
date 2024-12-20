@@ -1,0 +1,1 @@
+Briefly disables a button to avoid accidental double clicking
