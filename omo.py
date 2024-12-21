@@ -23,7 +23,7 @@ Description:
     The exponential decay model has been calibrated for a half-life equivalent to a urine
     production rate of 750 mL/hr.
 
-License: MIT License
+License: The MIT License (MIT)
 Contact: https://github.com/perv-asive
 Dependencies: collections, statistics, random, math
 """
@@ -54,7 +54,9 @@ from math import log2
 
 
 
-
+#------------------------------------------------------------------------------------------------------------
+#Exterior Variables:
+#------------------------------------------------------------------------------------------------------------
 # h is the half life of water consumed before it gets absorbed, in minutes
 h = float(45)
 # default_capacity is 500 mL, the accepted figure for human bladder size
@@ -63,24 +65,48 @@ default_capacity = 500
 # after asking permission, we cannot ask again until bladder has increased
 # by capacity/fullness_quantum. This method is balanced between large and small bladders.
 fullness_quantum = 5.0
+#------------------------------------------------------------------------------------------------------------
 
 
+
+
+#------------------------------------------------------------------------------------------------------------
+#Permission Class:
+#------------------------------------------------------------------------------------------------------------
 class Permission(collections.namedtuple('Permission', ['time', 'permission'])):
     pass
+#------------------------------------------------------------------------------------------------------------
 
 
+
+
+#------------------------------------------------------------------------------------------------------------
+#Drink Class:
+#------------------------------------------------------------------------------------------------------------
 class Drink(collections.namedtuple('Drink', ['time', 'amount'])):
     def unabsorbed(self, t):
         if t > self.time:
             return (2 ** ((self.time - t) / h)) * self.amount
         else:
             return self.amount
+#------------------------------------------------------------------------------------------------------------
 
 
+
+
+#------------------------------------------------------------------------------------------------------------
+#Release Class:
+#------------------------------------------------------------------------------------------------------------
 class Release(collections.namedtuple('Release', ['time', 'amount', 'permission'])):
     pass
+#------------------------------------------------------------------------------------------------------------
 
 
+
+
+#------------------------------------------------------------------------------------------------------------
+#Drinker Class:
+#------------------------------------------------------------------------------------------------------------
 class Drinker(object):
     def __init__(self):
         random.seed()
@@ -161,3 +187,4 @@ class Drinker(object):
         answer = roll > self.desperation(t)
         self._permission = Permission(t, answer)
         return answer
+#------------------------------------------------------------------------------------------------------------

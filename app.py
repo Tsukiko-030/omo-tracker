@@ -20,7 +20,7 @@ Description:
     and allows or denies potty breaks. It also keeps track of your accidents to learn your
     personal bladder capacity.
 
-License: MIT License
+License: The MIT License (MIT)
 Contact: https://github.com/perv-asive, tsukiko1701@gmail.com
 Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py
 """
@@ -66,15 +66,15 @@ accident_log = os.path.join(save_dir, 'accidents.csv')
 
 
 
-#----------------------------
+#--------------------------------------
 #Exterior Functions:
-#----------------------------
+#--------------------------------------
 def current_time_in_minutes_float():
     return time.time()/60.0
 
 def current_time_in_seconds_int():
     return (int(time.time()))
-#----------------------------
+#--------------------------------------
 
 
 
