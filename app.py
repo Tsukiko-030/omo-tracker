@@ -16,13 +16,12 @@ Authors: PERVasive, Tsukiko
 Date: 05/09/2018
 Version: 1.0.0
 Description:
-    Omo Trainer keeps track of the fluids you drink, models your pee desperation over time,
-    and allows or denies potty breaks. It also keeps track of your accidents to learn your
-    personal bladder capacity.
+    Omo Tracker keeps track of the fluids you drink, models your pee desperation over time,
+    and tracks intentional pees and accidents to learn your personal bladder capacity.
 
 License: The MIT License (MIT)
 Contact: https://github.com/perv-asive, tsukiko1701@gmail.com
-Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py
+Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py, timer.py
 """
 
 
@@ -34,7 +33,7 @@ __license__ = "The MIT License (MIT)"
 __version__ = "1.0.0"
 __maintainer__ = "Tsukiko"
 __email__ = "tsukiko1701@gmail.com"
-__status__ = "Alpha"
+__status__ = "Production"
 #----------------------------
 
 
@@ -51,6 +50,7 @@ import csv
 import os
 import math
 import omo
+from timer import Timer
 #----------------------------
 
 
@@ -71,9 +71,6 @@ accident_log = os.path.join(save_dir, 'accidents.csv')
 #--------------------------------------
 def current_time_in_minutes_float():
     return time.time()/60.0
-
-def current_time_in_seconds_int():
-    return (int(time.time()))
 #--------------------------------------
 
 
@@ -98,8 +95,12 @@ class App(object):
             pass
 
 
-        #Create Drinker Object:
+        #Initialize Drinker Class:
         self.drinker = omo.Drinker()
+
+
+        #Initialize Timer class
+        self.hold_timer = Timer()
 
 
         #Try to load hold history CSV
@@ -114,7 +115,7 @@ class App(object):
         self.drink_text = tk.StringVar()
         self.permission_text = tk.StringVar()
         self.eta_text = tk.StringVar()
-        self.hold_timer = tk.StringVar()
+        self.display_hold_timer = tk.StringVar()
 
 
         #Display GUI Widgets:
@@ -304,35 +305,6 @@ class App(object):
         if os.path.exists(accident_log):
             os.remove(accident_log)
         self.drinker.old_accidents = []
-    
-
-
-
-    def calculate_hold_time(self):
-        return((current_time_in_seconds_int()) - self.hold_start)
-    
-
-
-
-    def reset_hold_timer(self):
-        self.hold_timer.set(f"00:00:00")
-        self.hold_start = current_time_in_seconds_int()
-
-
-
-
-    def update_hold_timer(self):
-        # Calculate the elapsed time in seconds:
-        elapsed_seconds = self.calculate_hold_time()
-        
-        # Convert seconds into hours, minutes, and seconds:
-        hours = elapsed_seconds // 3600
-        minutes = (elapsed_seconds % 3600) // 60
-        seconds = elapsed_seconds % 60
-        
-        # Format the time as hh:mm:ss:
-        #return f"{hours:02}:{minutes:02}:{seconds:02}"
-        self.hold_timer.set(f"{hours:02}:{minutes:02}:{seconds:02}")
 #----------------------------------------------------------------------------------------------------------------------
 
 
