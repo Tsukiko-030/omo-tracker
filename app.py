@@ -50,7 +50,7 @@ import csv
 import os
 import math
 import omo
-from timer import Timer
+import stopwatch
 #----------------------------
 
 
@@ -99,8 +99,8 @@ class App(object):
         self.drinker = omo.Drinker()
 
 
-        #Initialize Timer class
-        self.hold_timer = Timer()
+        #Initialize Hold Stopwatch:
+        self.hold_stopwatch = stopwatch.Stopwatch()
 
 
         #Try to load hold history CSV
@@ -115,7 +115,7 @@ class App(object):
         self.drink_text = tk.StringVar()
         self.permission_text = tk.StringVar()
         self.eta_text = tk.StringVar()
-        self.display_hold_timer = tk.StringVar()
+        self.hold_time_display_control_variable = tk.StringVar() # Variable for controling GUI's the displayed hold time.
 
 
         #Display GUI Widgets:
@@ -126,8 +126,9 @@ class App(object):
         self.create_menus()
 
 
-        #Initialize hold timer:
-        self.reset_hold_timer()
+        #Initialize hold stopwatch:
+        self.hold_time_display_control_variable.set("00:00:00") # Initialize the hold stopwatch display.
+        self.hold_stopwatch.start_stopwatch() # Start the hold stopwatch.
         
 
         #Periodically check for GUI changes and update backend:
@@ -177,8 +178,8 @@ class App(object):
         self.accident_button = ttk.Button(self.mainframe, text="I can't hold it!", command=self.accident)
         self.accident_button.grid(column=4, row=1, sticky=(tk.E))
 
-        self.hold_timer_display = ttk.Label(self.mainframe, textvariable= self.hold_timer)
-        self.hold_timer_display.grid(column = 4, row = 2, sticky=(tk.S, tk.E))
+        self.hold_time_display = ttk.Label(self.mainframe, textvariable= self.hold_time_display_control_variable)
+        self.hold_time_display.grid(column = 4, row = 2, sticky=(tk.S, tk.E))
 
         for child in self.mainframe.winfo_children():
             child.grid_configure(padx=5, pady=5)
@@ -261,7 +262,7 @@ class App(object):
 
     def poll(self):
         t = current_time_in_minutes_float()
-        self.update_hold_timer()
+        self.hold_time_display_control_variable.set(self.hold_stopwatch.output_elapsed_time())
         self.desperation.set(self.drinker.desperation(t))
         self.bladder_text.set(str(round(self.drinker.bladder(t))) + " mL/" + str(round(self.drinker.capacity)) + " mL")
         if self.drinker.eta:

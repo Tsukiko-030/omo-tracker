@@ -83,7 +83,7 @@ class Stopwatch():
     # Private Methods:
     def _current_time_in_seconds(self):
         """Returns the current Unix time in seconds."""
-        return int(time.time())
+        return int(time.perf_counter())
 
 
 
