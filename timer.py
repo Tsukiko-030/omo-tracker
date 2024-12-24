@@ -11,16 +11,19 @@
 
 # Docstring:
 """
-Filename: template.py
+Filename: timer.py
 Authors: Tsukiko
-Date: 
+Date: 23/12/2024
 Version: 1.0.0
 Description:
+    A basic timer class that will primarily be used to track remaining hold time,
+    consequently it is only designed to track time for hours, not days or beyond
+    and it's precision is limited to seconds.
     
 
 License: MIT License
 Contact: tsukiko1701@gmail.com
-Dependencies: 
+Dependencies: time
 """
 
 
@@ -41,7 +44,7 @@ __status__ = "Production"
 #----------------------------
 # Import Statements:
 #----------------------------
-
+import time
 #----------------------------
 
 
@@ -50,8 +53,17 @@ __status__ = "Production"
 #--------------------------------------
 # Exterior Functions:
 #--------------------------------------
-
 #--------------------------------------
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------
+# StopwatchError Class:
+#----------------------------------------------------------------------------------------------------------------------
+class TimerError(Exception):
+    """This custom exception is used to report errors in the use of the Timer class."""
+#----------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -59,10 +71,10 @@ __status__ = "Production"
 #----------------------------------------------------------------------------------------------------------------------
 # Template Class:
 #----------------------------------------------------------------------------------------------------------------------
-class Template():
+class Timer():
     # Constructor:
     def _init__(self):
-        """Initializes the Template Class."""
+        """Initializes the Timer Class."""
 
 
 
@@ -71,7 +83,7 @@ class Template():
 
 
 
-    
+
     # Public Methods:
 #----------------------------------------------------------------------------------------------------------------------
 

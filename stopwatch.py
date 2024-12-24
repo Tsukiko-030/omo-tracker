@@ -13,7 +13,7 @@
 """
 Filename: stopwatch.py
 Authors: Tsukiko
-Date: 21/12/2024
+Date: 23/12/2024
 Version: 1.0.0
 Description:
     A basic stopwatch class that will primarily be used to track elapsed hold time,
@@ -81,17 +81,11 @@ class Stopwatch():
 
 
     # Private Methods:
-    def _current_time_in_seconds(self):
-        """Returns the current Unix time in seconds."""
-        return int(time.perf_counter())
-
-
-
     def _update_elapsed_time(self):
         """Updates the _elapsed_time variable. To be used for stopping and resuming the stopwatch."""
         if self.is_running():
-            self._elapsed_time += self._current_time_in_seconds() - self._start_time
-            self._start_time = self._current_time_in_seconds()  # Reset start time for ongoing tracking
+            self._elapsed_time += int(time.perf_counter()) - self._start_time
+            self._start_time = int(time.perf_counter())  # Reset start time for ongoing tracking
     
 
 
@@ -110,7 +104,7 @@ class Stopwatch():
             raise StopwatchError("The stopwatch is running. Use .stop_stopwatch() to stop the stopwatch.")
         
 
-        self._start_time = self._current_time_in_seconds()
+        self._start_time = int(time.perf_counter())
         self._running = True
     
 
@@ -147,7 +141,7 @@ class Stopwatch():
             raise StopwatchError("Cannot resume a running stopwatch.")
         
         
-        self._start_time = self._current_time_in_seconds()
+        self._start_time = int(time.perf_counter())
         self._running = True
 
 
@@ -169,7 +163,7 @@ class Stopwatch():
         """Returns the total time since the stopwatch was started."""
         if self.is_running():
             # Calculate elapsed time without modifying the stored value:
-            return self._elapsed_time + (self._current_time_in_seconds() - self._start_time)
+            return self._elapsed_time + (int(time.perf_counter()) - self._start_time)
        
        
         return self._elapsed_time

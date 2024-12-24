@@ -21,7 +21,7 @@ Description:
 
 License: The MIT License (MIT)
 Contact: https://github.com/perv-asive, tsukiko1701@gmail.com
-Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py, timer.py
+Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py, stopwatch.py, timer.py
 """
 
 
@@ -51,6 +51,7 @@ import os
 import math
 import omo
 import stopwatch
+import timer
 #----------------------------
 
 
