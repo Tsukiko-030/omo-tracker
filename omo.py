@@ -120,7 +120,7 @@ class Drinker(object):
 
     @history.setter
     def history(self, value):
-        self._history = sorted(value, key=lambda el: el.time)
+        self._history = sorted(value, key = lambda el: el.time)
 
     @property
     def drinks(self):
@@ -152,7 +152,7 @@ class Drinker(object):
             # Inverse function of sum(unabsorbed), must be solved by hand algebraically
             # Result will change if additional drinks after ETA is reached
             return start_time + \
-                h*log2(sum(el.amount*2**((el.time - start_time)/h) for el in self.drinks)/excess_latent_water)
+                h*log2(sum(el.amount * 2 ** ((el.time - start_time) / h) for el in self.drinks) / excess_latent_water)
         else:
             return None
 
@@ -179,7 +179,7 @@ class Drinker(object):
         if not self._permission.time:
             return True
         else:
-            return self.absorbed(t) - self.absorbed(self._permission.time) > self.capacity/fullness_quantum
+            return self.absorbed(t) - self.absorbed(self._permission.time) > self.capacity / fullness_quantum
 
     def roll_for_permission(self, t):
         # 10% chance of guaranteed yes or no

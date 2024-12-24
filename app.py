@@ -140,59 +140,60 @@ class App(object):
     def create_widgets(self):
         # Set up tkinter main frame:
         self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
-        self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
-        self.mainframe.columnconfigure(0, weight=1)
-        self.mainframe.rowconfigure(0, weight=1)
+        self.mainframe.grid(column = 0, row = 0, sticky = (tk.N, tk.W, tk.E, tk.S))
+        self.mainframe.columnconfigure(0, weight = 1)
+        self.mainframe.rowconfigure(0, weight = 1)
+
 
         #Set up tinter widgets:
-        self.bladder_bar = ttk.Progressbar(self.mainframe, style="yellow.Vertical.TProgressbar", orient=tk.VERTICAL,
+        self.bladder_bar = ttk.Progressbar(self.mainframe, style = "yellow.Vertical.TProgressbar", orient = tk.VERTICAL,
                                            variable=self.desperation, maximum=1, mode='determinate')
-        self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
+        self.bladder_bar.grid(column = 0, row = 0, rowspan = 2, sticky = (tk.N, tk.S))
 
-        self.bladder_display = ttk.Label(self.mainframe, textvariable=self.bladder_text)
-        self.bladder_display.grid(column=0, row=2, sticky=(tk.S, tk.W))
+        self.bladder_display = ttk.Label(self.mainframe, textvariable = self.bladder_text)
+        self.bladder_display.grid(column = 0, row = 2, sticky = (tk.S, tk.W))
 
-        self.eta_display = ttk.Label(self.mainframe, textvariable=self.eta_text)
-        self.eta_display.grid(column=1, row=2, columnspan=2, sticky=(tk.S, tk.W))
+        self.eta_display = ttk.Label(self.mainframe, textvariable = self.eta_text)
+        self.eta_display.grid(column = 1, row = 2, columnspan = 2, sticky = (tk.S, tk.W))
 
-        self.drink_slider = ttk.Scale(self.mainframe, orient=tk.HORIZONTAL, length=200,
-                                      variable=self.drink_amount, command=self._quantize_drink, from_=50, to=1000)
-        self.drink_slider.grid(column=1, row=0, columnspan=2, sticky=(tk.W, tk.E))
+        self.drink_slider = ttk.Scale(self.mainframe, orient = tk.HORIZONTAL, length = 200,
+                                      variable = self.drink_amount, command = self._quantize_drink, from_ = 50, to = 1000)
+        self.drink_slider.grid(column = 1, row = 0, columnspan = 2, sticky = (tk.W, tk.E))
 
         self.drink_display = ttk.Label(self.mainframe, textvariable=self.drink_text)
-        self.drink_display.grid(column=3, row=0, sticky=(tk.E))
+        self.drink_display.grid(column = 3, row = 0, sticky = (tk.E))
         self._quantize_drink()
 
-        self.drink_button = ttk.Button(self.mainframe, text="Drink", command=self.drink)
-        self.drink_button.grid(column=4, row=0, sticky=(tk.E))
+        self.drink_button = ttk.Button(self.mainframe, text = "Drink", command = self.drink)
+        self.drink_button.grid(column = 4, row = 0, sticky = (tk.E))
 
         self.permission_text.set("May I pee?")
-        self.permission_button = ttk.Button(self.mainframe, textvariable=self.permission_text,
-                                            command=self.ask_permission)
-        self.permission_button.grid(column=1, row=1, sticky=(tk.W))
+        self.permission_button = ttk.Button(self.mainframe, textvariable = self.permission_text,
+                                            command = self.ask_permission)
+        self.permission_button.grid(column = 1, row = 1, sticky = (tk.W))
 
-        self.pee_button = ttk.Button(self.mainframe, text="Go pee.", command=self.pee)
-        self.pee_button.grid(column=2, row=1, sticky=(tk.W))
+        self.pee_button = ttk.Button(self.mainframe, text = "Go pee.", command = self.pee)
+        self.pee_button.grid(column = 2, row = 1, sticky = (tk.W))
         self.pee_button.state(['disabled'])
 
-        self.accident_button = ttk.Button(self.mainframe, text="I can't hold it!", command=self.accident)
-        self.accident_button.grid(column=4, row=1, sticky=(tk.E))
+        self.accident_button = ttk.Button(self.mainframe, text = "I can't hold it!", command = self.accident)
+        self.accident_button.grid(column = 4, row = 1, sticky = (tk.E))
 
-        self.hold_time_display = ttk.Label(self.mainframe, textvariable= self.hold_time_display_control_variable)
-        self.hold_time_display.grid(column = 4, row = 2, sticky=(tk.S, tk.E))
+        self.hold_time_display = ttk.Label(self.mainframe, textvariable = self.hold_time_display_control_variable)
+        self.hold_time_display.grid(column = 4, row = 2, sticky = (tk.S, tk.E))
 
         for child in self.mainframe.winfo_children():
-            child.grid_configure(padx=5, pady=5)
+            child.grid_configure(padx = 5, pady = 5)
 
 
 
 
     def create_menus(self):
-        self.menubar = tk.Menu(self.root, tearoff=0)
-        self.menu_main = tk.Menu(self.menubar, tearoff=0)
+        self.menubar = tk.Menu(self.root, tearoff = 0)
+        self.menu_main = tk.Menu(self.menubar, tearoff = 0)
         self.root.config(menu=self.menubar)
-        self.menubar.add_cascade(menu=self.menu_main, label='Menu')
-        self.menu_main.add_command(label='Reset Capacity Log', command=self.reset_capacity)
+        self.menubar.add_cascade(menu = self.menu_main, label = 'Menu')
+        self.menu_main.add_command(label = 'Reset Capacity Log', command = self.reset_capacity)
 
 
 
