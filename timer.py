@@ -73,18 +73,88 @@ class TimerError(Exception):
 #----------------------------------------------------------------------------------------------------------------------
 class Timer():
     # Constructor:
-    def _init__(self):
-        """Initializes the Timer Class."""
+    def __init__(self, duration):
+        """
+        Initializes the Countdown class.
+        :param duration: Countdown duration in seconds.
+        """
+        if duration <= 0:
+            raise ValueError("Duration must be greater than zero.")
+        
+        self._initial_duration = int(duration)
+        self._remaining_time = int(duration)
+        self._start_time = None
+        self._running = False
 
 
 
 
     # Private Methods:
+    def _update_remaining_time(self):
+        """Updates the remaining time based on elapsed time since start."""
+        if self.is_running():
+            elapsed = int(time.perf_counter()) - self._start_time
+            self._remaining_time -= int(elapsed)
+            self._start_time = int(time.perf_counter())
+            # Prevent negative remaining time:
+            if self._remaining_time <= 0:
+                self._remaining_time = 0
+                self._running = False
 
 
 
 
-    # Public Methods:
+     # Public Methods:
+    def is_running(self):
+        """Returns True if the countdown is running."""
+        return self._running
+
+    def start_countdown(self):
+        """Starts the countdown."""
+        if self.is_running():
+            raise TimerError("The countdown is already running.")
+        if self._remaining_time <= 0:
+            raise TimerError("The countdown has already finished. Reset to start again.")
+        
+        self._start_time = int(time.perf_counter())
+        self._running = True
+
+    def pause_countdown(self):
+        """Pauses the countdown."""
+        if not self.is_running():
+            raise TimerError("Cannot pause a countdown that isn't running.")
+        self._update_remaining_time()
+        self._running = False
+
+    def resume_countdown(self):
+        """Resumes the countdown."""
+        if self.is_running():
+            raise TimerError("Cannot resume a running countdown.")
+        if self._remaining_time <= 0:
+            raise TimerError("Cannot resume a finished countdown. Reset to start again.")
+        
+        self._start_time = int(time.perf_counter())
+        self._running = True
+
+    def reset_countdown(self):
+        """Resets the countdown to its initial duration."""
+        self._remaining_time = self._initial_duration
+        self._start_time = None
+        self._running = False
+
+    def get_remaining_time(self):
+        """Returns the remaining time in seconds."""
+        if self.is_running():
+            self._update_remaining_time()
+        return self._remaining_time
+
+    def output_remaining_time(self):
+        """Returns the remaining time as a formatted string (hh:mm:ss)."""
+        remaining = self.get_remaining_time()
+        hours = remaining // 3600
+        minutes = (remaining % 3600) // 60
+        seconds = remaining % 60
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
 #----------------------------------------------------------------------------------------------------------------------
 
 

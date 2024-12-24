@@ -148,7 +148,7 @@ class Stopwatch():
 
 
     def reset_stopwatch(self):
-        """Resets the stopwatch to 00:00:00."""
+        """Stops the stopwatch and resets the stopwatch to 00:00:00."""
         if self.is_running():
             self.stop_stopwatch()
         

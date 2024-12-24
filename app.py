@@ -21,7 +21,7 @@ Description:
 
 License: The MIT License (MIT)
 Contact: https://github.com/perv-asive, tsukiko1701@gmail.com
-Dependencies: time, tkinter, tkinter.ttk, appdirs, csv, os, math, omo.py, stopwatch.py, timer.py
+Dependencies: time, tkinter, tkinter.ttk, tkinter.messagebox, customtkinter, appdirs, csv, os, math, omo.py, stopwatch.py, timer.py
 """
 
 
@@ -45,6 +45,8 @@ __status__ = "Production"
 import time
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import messagebox
+import customtkinter as ctk
 import appdirs
 import csv
 import os
@@ -83,17 +85,12 @@ def current_time_in_minutes_float():
 class App(object):
     def __init__(self):
         #Setup application window:
-        self.root = tk.Tk()
+        self.root = ctk.CTk()
         self.root.title("Omo Tracker")
         
 
         #Try to load application icon:
-        try:
-            img = tk.Image("photo", file="icon.png")
-            self.root.call('wm', 'iconphoto', self.root._w, img)
-        except tk.TclError:
-            # If the icon is missing, just go on with the default icon
-            pass
+        self.root.iconbitmap('icon.ico')
 
 
         #Initialize Drinker Class:
@@ -114,7 +111,6 @@ class App(object):
         self.drink_amount.set(500)
         self.bladder_text = tk.StringVar()
         self.drink_text = tk.StringVar()
-        self.permission_text = tk.StringVar()
         self.eta_text = tk.StringVar()
         self.hold_time_display_control_variable = tk.StringVar() # Variable for controling GUI's the displayed hold time.
 
@@ -139,48 +135,41 @@ class App(object):
 
 
     def create_widgets(self):
-        # Set up tkinter main frame:
-        self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
-        self.mainframe.grid(column = 0, row = 0, sticky = (tk.N, tk.W, tk.E, tk.S))
+        # Set up customtkinter main frame:
+        self.mainframe = ctk.CTkFrame(self.root)
+        self.mainframe.grid(column = 0, row = 0, padx=3, pady=3, sticky = (tk.N, tk.W, tk.E, tk.S))
         self.mainframe.columnconfigure(0, weight = 1)
         self.mainframe.rowconfigure(0, weight = 1)
 
 
-        #Set up tinter widgets:
-        self.bladder_bar = ttk.Progressbar(self.mainframe, style = "yellow.Vertical.TProgressbar", orient = tk.VERTICAL,
-                                           variable=self.desperation, maximum=1, mode='determinate')
-        self.bladder_bar.grid(column = 0, row = 0, rowspan = 2, sticky = (tk.N, tk.S))
+        #Set up customtkinter widgets:
+        self.bladder_bar = ctk.CTkProgressBar(self.mainframe, orientation = "vertical", variable=self.desperation)
+        self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
 
-        self.bladder_display = ttk.Label(self.mainframe, textvariable = self.bladder_text)
+        self.bladder_display = ctk.CTkLabel(self.mainframe, textvariable = self.bladder_text)
         self.bladder_display.grid(column = 0, row = 2, sticky = (tk.S, tk.W))
 
-        self.eta_display = ttk.Label(self.mainframe, textvariable = self.eta_text)
+        self.eta_display = ctk.CTkLabel(self.mainframe, textvariable = self.eta_text)
         self.eta_display.grid(column = 1, row = 2, columnspan = 2, sticky = (tk.S, tk.W))
 
-        self.drink_slider = ttk.Scale(self.mainframe, orient = tk.HORIZONTAL, length = 200,
-                                      variable = self.drink_amount, command = self._quantize_drink, from_ = 50, to = 1000)
+        self.drink_slider = ctk.CTkSlider(self.mainframe, orientation = "horizontal", width = 200,
+                                      variable = self.drink_amount, command = self._quantize_drink, from_ = 100, to = 750)
         self.drink_slider.grid(column = 1, row = 0, columnspan = 2, sticky = (tk.W, tk.E))
 
-        self.drink_display = ttk.Label(self.mainframe, textvariable=self.drink_text)
+        self.drink_display = ctk.CTkLabel(self.mainframe, textvariable=self.drink_text)
         self.drink_display.grid(column = 3, row = 0, sticky = (tk.E))
         self._quantize_drink()
 
-        self.drink_button = ttk.Button(self.mainframe, text = "Drink", command = self.drink)
+        self.drink_button = ctk.CTkButton(self.mainframe, text = "Drink", command = self.drink)
         self.drink_button.grid(column = 4, row = 0, sticky = (tk.E))
 
-        self.permission_text.set("May I pee?")
-        self.permission_button = ttk.Button(self.mainframe, textvariable = self.permission_text,
-                                            command = self.ask_permission)
-        self.permission_button.grid(column = 1, row = 1, sticky = (tk.W))
+        self.pee_button = ctk.CTkButton(self.mainframe, text = "Pee", command = self.pee)
+        self.pee_button.grid(column = 1, row = 1, sticky = (tk.W))
 
-        self.pee_button = ttk.Button(self.mainframe, text = "Go pee.", command = self.pee)
-        self.pee_button.grid(column = 2, row = 1, sticky = (tk.W))
-        self.pee_button.state(['disabled'])
+        self.accident_button = ctk.CTkButton(self.mainframe, text = "Accident", command = self.accident)
+        self.accident_button.grid(column = 2, row = 1, sticky = (tk.E))
 
-        self.accident_button = ttk.Button(self.mainframe, text = "I can't hold it!", command = self.accident)
-        self.accident_button.grid(column = 4, row = 1, sticky = (tk.E))
-
-        self.hold_time_display = ttk.Label(self.mainframe, textvariable = self.hold_time_display_control_variable)
+        self.hold_time_display = ctk.CTkLabel(self.mainframe, textvariable = self.hold_time_display_control_variable)
         self.hold_time_display.grid(column = 4, row = 2, sticky = (tk.S, tk.E))
 
         for child in self.mainframe.winfo_children():
@@ -209,9 +198,9 @@ class App(object):
 
 
     def _on_click(self, button):
-        """Briefly disables a button to avoid accidental double clicking"""
-        button.state(['disabled'])
-        self.root.after(1000, lambda: button.state(['!disabled']))
+        """Briefly disables a CustomTkinter button to avoid accidental double-clicking."""
+        button.configure(state="disabled")  # Disable the button
+        self.root.after(1000, lambda: button.configure(state="normal"))  # Re-enable the button after 1 second
 
 
 
@@ -227,23 +216,12 @@ class App(object):
         # Store Urination and the fact that permission was allowed not in CSV:
         self.drinker.add_release(current_time_in_minutes_float(), False)
 
-        #Reset hold timer:
-        self.reset_hold_timer()
+        # Reset Hold Timer:
+        self.hold_stopwatch.reset_stopwatch()
+        self.hold_stopwatch.start_stopwatch()
 
-        #Briefly disable the i can't hold it button to avoid accidental double clicking:
+        #Briefly disable the I can't hold it button to avoid accidental double clicking:
         self._on_click(self.accident_button)
-
-
-
-
-    def ask_permission(self):
-        if self.drinker.roll_for_permission(current_time_in_minutes_float()):
-            self.permission_text.set("You may pee.")
-            self.permission_button.state(['disabled'])
-            self.pee_button.state(['!disabled'])
-        else:
-            self.permission_text.set("You may not pee.")
-            self.permission_button.state(['disabled'])
 
 
 
@@ -253,20 +231,21 @@ class App(object):
         self.drinker.add_release(current_time_in_minutes_float(), True)
 
         #Reset hold timer:
-        self.reset_hold_timer()
-
-        #Reset button text and temporarily disable button:
-        self.permission_text.set("May I pee?")
-        self.pee_button.state(['disabled'])
+        self.hold_stopwatch.reset_stopwatch()
+        self.hold_stopwatch.start_stopwatch()
 
 
 
 
     def poll(self):
         t = current_time_in_minutes_float()
+
         self.hold_time_display_control_variable.set(self.hold_stopwatch.output_elapsed_time())
+
         self.desperation.set(self.drinker.desperation(t))
+
         self.bladder_text.set(str(round(self.drinker.bladder(t))) + " mL/" + str(round(self.drinker.capacity)) + " mL")
+        
         if self.drinker.eta:
             eta = math.ceil(self.drinker.eta - t)
             if eta > 1:
@@ -277,10 +256,7 @@ class App(object):
                 self.eta_text.set("Potty emergency now!")
         else:
             self.eta_text.set("")
-        if self.permission_button.instate(['disabled']) and self.drinker.roll_allowed(t):
-            self.permission_button.state(['!disabled'])
-            self.pee_button.state(['disabled'])
-            self.permission_text.set("May I pee?")
+        
         self.root.after(500, self.poll)
 
 
@@ -305,9 +281,16 @@ class App(object):
 
 
     def reset_capacity(self):
-        if os.path.exists(accident_log):
-            os.remove(accident_log)
-        self.drinker.old_accidents = []
+        response = messagebox.askyesno("Confirm Reset", "Are you sure you want to reset the capacity log?")
+
+        if response:  # User clicked "Yes".
+            if os.path.exists(accident_log):
+                os.remove(accident_log)
+            self.drinker.old_accidents = []
+            tk.messagebox.showinfo("Reset Successful", "Capacity has been reset.")
+        else:  # User clicked "No"
+            tk.messagebox.showinfo("Reset Canceled", "Capacity reset was canceled.")
+
 #----------------------------------------------------------------------------------------------------------------------
 
 
