@@ -86,6 +86,8 @@ class App(object):
     def __init__(self):
         #Setup application window:
         self.root = ctk.CTk()
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
         self.root.title("Omo Tracker")
         
 
@@ -113,6 +115,10 @@ class App(object):
         self.drink_text = tk.StringVar()
         self.eta_text = tk.StringVar()
         self.hold_time_display_control_variable = tk.StringVar() # Variable for controling GUI's the displayed hold time.
+
+
+        #GUI Styling:
+        self.button_font = ctk.CTkFont("Arial", 12)
 
 
         #Display GUI Widgets:
@@ -143,7 +149,7 @@ class App(object):
 
 
         #Set up customtkinter widgets:
-        self.bladder_bar = ctk.CTkProgressBar(self.mainframe, orientation = "vertical", variable=self.desperation)
+        self.bladder_bar = ctk.CTkProgressBar(self.mainframe, orientation = "vertical", variable=self.desperation, fg_color = "#ffb8bf", border_color = "#fb928e", progress_color = "#fff177")
         self.bladder_bar.grid(column=0, row=0, rowspan=2, sticky=(tk.N, tk.S))
 
         self.bladder_display = ctk.CTkLabel(self.mainframe, textvariable = self.bladder_text)
@@ -153,20 +159,20 @@ class App(object):
         self.eta_display.grid(column = 1, row = 2, columnspan = 2, sticky = (tk.S, tk.W))
 
         self.drink_slider = ctk.CTkSlider(self.mainframe, orientation = "horizontal", width = 200,
-                                      variable = self.drink_amount, command = self._quantize_drink, from_ = 100, to = 750)
+                                      variable = self.drink_amount, command = self._quantize_drink, from_ = 100, to = 750, progress_color = "white", button_color = "#fff177", button_hover_color = "#dbc300")
         self.drink_slider.grid(column = 1, row = 0, columnspan = 2, sticky = (tk.W, tk.E))
 
         self.drink_display = ctk.CTkLabel(self.mainframe, textvariable=self.drink_text)
         self.drink_display.grid(column = 3, row = 0, sticky = (tk.E))
         self._quantize_drink()
 
-        self.drink_button = ctk.CTkButton(self.mainframe, text = "Drink", command = self.drink)
+        self.drink_button = ctk.CTkButton(self.mainframe, text = "Drink ☕", command = self.drink, font = self.button_font, border_width = 3, fg_color = "#ffb8bf", hover_color = "#fb928e", border_color = "#fb928e", text_color = "#fff177")
         self.drink_button.grid(column = 4, row = 0, sticky = (tk.E))
 
-        self.pee_button = ctk.CTkButton(self.mainframe, text = "Pee", command = self.pee)
+        self.pee_button = ctk.CTkButton(self.mainframe, text = "Pee 🚽", command = self.pee, font = self.button_font, border_width = 0, fg_color = "#00ff00", hover_color = "#1fc600", border_color = "#fff177", text_color = "white")
         self.pee_button.grid(column = 1, row = 1, sticky = (tk.W))
 
-        self.accident_button = ctk.CTkButton(self.mainframe, text = "Accident", command = self.accident)
+        self.accident_button = ctk.CTkButton(self.mainframe, text = "Accident 💦", command = self.accident, font = self.button_font, border_width = 0, fg_color = "#ff0000", hover_color = "#c80000", border_color = "#fff177", text_color = "white")
         self.accident_button.grid(column = 2, row = 1, sticky = (tk.E))
 
         self.hold_time_display = ctk.CTkLabel(self.mainframe, textvariable = self.hold_time_display_control_variable)
@@ -216,9 +222,11 @@ class App(object):
         # Store Urination and the fact that permission was allowed not in CSV:
         self.drinker.add_release(current_time_in_minutes_float(), False)
 
+
         # Reset Hold Timer:
         self.hold_stopwatch.reset_stopwatch()
         self.hold_stopwatch.start_stopwatch()
+
 
         #Briefly disable the I can't hold it button to avoid accidental double clicking:
         self._on_click(self.accident_button)
@@ -230,9 +238,14 @@ class App(object):
         # Store Urination and the fact that permission was allowed in CSV:
         self.drinker.add_release(current_time_in_minutes_float(), True)
 
+
         #Reset hold timer:
         self.hold_stopwatch.reset_stopwatch()
         self.hold_stopwatch.start_stopwatch()
+
+
+        # Briefly disable the button to prevent accidental double clicking:
+        self._on_click(self.pee_button)
 
 
 
